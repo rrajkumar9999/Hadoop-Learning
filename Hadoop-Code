@@ -1,7 +1,7 @@
 
 To do spark streaming analysis using spark shell
 
-[rrajkumar9999@gw01 ~]$ spark-shell --conf spark.ui.port=11111 --packages org.apache.spark:spark-streaming-kafka_2.10:1.6.2
+spark-shell --conf spark.ui.port=11111 --packages org.apache.spark:spark-streaming-kafka_2.10:1.6.2
 
 scala> sc.stop / sc.stop()
 
