@@ -1,3 +1,47 @@
+flume-ng agent -n a1 -c /home/rrajkumar9999/flume/conf -f /home/rrajkumar9999/flume/conf/example4.conf
+
+Conf details
+# flume-logger-hdfs.conf: Read data from logs and write it to both logger and hdfs 
+# flume command to start the agent - flume-ng agent -n a1 -c /home/rrajkumar9999/flume/conf -f /home/rrajkumar9999/flume/conf/example2.conf 
+
+# Name the components on this agent 
+a1.sources = logsource
+a1.sinks = loggersink hdfssink
+a1.channels = loggerchannel hdfschannel
+
+# Describe/configure the source 
+a1.sources.logsource.type = exec
+a1.sources.logsource.command = tail -F /opt/gen_logs/logs/access.log
+
+# Describe the sink 
+a1.sinks.loggersink.type = logger
+
+# Use a channel which buffers events in memory 
+a1.channels.loggerchannel.type = memory
+a1.channels.loggerchannel.capacity = 1000
+a1.channels.loggerchannel.transactionCapacity = 100
+
+# Bind the source and sink to the channel 
+a1.sources.logsource.channels = loggerchannel hdfschannel
+a1.sinks.loggersink.channel = loggerchannel
+
+#Describe the sink 
+a1.sinks.hdfssink.type = org.apache.flume.sink.kafka.KafkaSink
+a1.sinks.hdfssink.brokerList = rm01.itversity.com:6667,nn02.itversity.com:6667,nn01.itversity.com:6667
+a1.sinks.hdfssink.topic = topictest1
+a1.sinks.hdfssink.batchSize = 20
+
+#Use a channel which buffers events in file for HDFS sink 
+a1.channels.hdfschannel.type = file
+a1.channels.hdfschannel.capacity = 1000
+a1.channels.hdfschannel.transactionCapacity = 100
+a1.channels.hdfschannel.checkpointInterval = 30000
+a1.channels.hdfschannel.dataDirs = /home/rrajkumar9999/flume/file-channel/checkpoint
+a1.channels.hdfschannel.checkpointDir = /home/rrajkumar9999/flume/file-channel/data
+
+# Bind the source and sink to the channel 
+a1.sinks.hdfssink.channel = hdfschannel
+
 To do spark streaming analysis using spark shell
 
 spark-shell --conf spark.ui.port=11111 --packages org.apache.spark:spark-streaming-kafka_2.10:1.6.2
